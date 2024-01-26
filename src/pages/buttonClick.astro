@@ -1,0 +1,142 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+---
+
+<!-- todo --><!-- 入力部分のスタイリング
+右にアニメ
+selectでpathを持たせる
+他のステータスの入力も受け取る
+destoryして同じ領域にアニメを表示させる -->
+<Layout title="Welcome to Astro.">
+    <Header />
+    <main>
+        <input id="path" type="text" value="./lottie/sample_02.json" />
+        <button id="getPath">file path</button>
+        <button id="myButton">Click me</button>
+        <button id="play">play()</button>
+        <button id="stop">stop()</button>
+        <button id="pause">pause()</button>
+        <button id="setSpeed">setSpeed(0.5)</button>
+        <button id="goToAndStop">goToAndStop(400)</button>
+        <button id="goToAndPlay">goToAndPlay(200)</button>
+        <button id="setDirection">setDirection(-1)</button>
+        <button id="destroy">destroy()</button>
+        <button id="getDuration">getDuration()</button>
+        <button id="getDurationTrue">getDuration(true)</button>
+        <div class="lottie"></div>
+        <div id="sample"></div>
+        <a
+            href="https://cly7796.net/blog/javascript/experiment-with-controlling-animations-created-with-lottie/"
+            >https://cly7796.net/blog/javascript/experiment-with-controlling-animations-created-with-lottie/</a
+        >
+        <!-- <button onclick="initLottie();">initLottie</button> -->
+    </main>
+</Layout>
+
+<style>
+    main {
+        margin-top: 200px;
+    }
+</style>
+
+<script>
+    import gsap from "gsap";
+    import lottie from "lottie-web";
+    const myButton = document.getElementById("myButton");
+
+    function getPath() {
+        const setPath = document.getElementById("path").value;
+        return setPath;
+    }
+
+    myButton.addEventListener("click", () => {
+        lottie.loadAnimation({
+            container: document.querySelector(".lottie"),
+            renderer: "svg",
+            loop: false,
+            autoplay: true,
+            name: "lottie-name",
+            path: "./lottie/sample_02.json",
+            onComplete: lottie.destroy(),
+            // onComplete() {
+            //     console.log("complete");
+            // },
+        });
+        // lottie.destroy();
+    });
+
+    const demo = lottie.loadAnimation({
+        container: document.getElementById("sample"), // アニメーションを追加する要素
+        renderer: "svg", // レンダリングのタイプ
+        loop: false, // アニメーションをループさせるかどうか
+        autoplay: false, // アニメーションを自動再生するかどうか
+        path: "./lottie/sample_02.json",
+    });
+
+    document.getElementById("getPath").addEventListener("click", function () {
+        const altPath = getPath();
+        console.log(altPath);
+        const demo2 = lottie.loadAnimation({
+            container: document.getElementById("sample"), // アニメーションを追加する要素
+            renderer: "svg", // レンダリングのタイプ
+            loop: false, // アニメーションをループさせるかどうか
+            autoplay: true, // アニメーションを自動再生するかどうか
+            path: altPath,
+        });
+        demo2.play();
+        // demo.destroy();
+    });
+
+    document.getElementById("play").addEventListener("click", function () {
+        demo.play();
+    });
+    document.getElementById("stop").addEventListener("click", function () {
+        demo.stop();
+    });
+    document.getElementById("pause").addEventListener("click", function () {
+        demo.pause();
+    });
+    document.getElementById("setSpeed").addEventListener("click", function () {
+        demo.setSpeed(0.5);
+    });
+    document
+        .getElementById("goToAndStop")
+        .addEventListener("click", function () {
+            demo.goToAndStop(400);
+        });
+    document
+        .getElementById("goToAndPlay")
+        .addEventListener("click", function () {
+            demo.goToAndPlay(200);
+        });
+    document
+        .getElementById("setDirection")
+        .addEventListener("click", function () {
+            demo.setDirection(-1);
+        });
+    document.getElementById("destroy").addEventListener("click", function () {
+        demo.destroy();
+    });
+    document
+        .getElementById("getDuration")
+        .addEventListener("click", function () {
+            console.log(demo.getDuration());
+        });
+    document
+        .getElementById("getDuration")
+        .addEventListener("click", function () {
+            console.log(demo.getDuration(true));
+        });
+
+    // LottieScrollTrigger({
+    //     target: "#animationWindow",
+    //     path: "./lottie/sample_02.json",
+    //     speed: "medium",
+    //     scrub: 1,
+    // });
+
+    // function initLottie() {
+    //     console.log("initLottie");
+    // }
+</script>
