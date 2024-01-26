@@ -1,0 +1,29 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+---
+
+<Layout title="Welcome to Astro.">
+    <Header />
+    <main>
+        <div class="lottie"></div>
+        <a href="https://zenn.dev/peita/articles/ff21f1fc761b0a"
+            >https://zenn.dev/peita/articles/ff21f1fc761b0a</a
+        >
+    </main>
+</Layout>
+<!-- CDN -->
+<!-- <script
+    src="https://cdnjs.cloudflare.com/ajax/libs/lottie-web/5.11.0/lottie.min.js"
+></script> -->
+<script>
+    import lottie from "lottie-web";
+    lottie.loadAnimation({
+        container: document.querySelector(".lottie"),
+        renderer: "svg",
+        loop: true,
+        autoplay: true,
+        name: "lottie-name",
+        path: "./lottie/sample_02.json",
+    });
+</script>

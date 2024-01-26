@@ -1,0 +1,95 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+---
+
+<Layout title="Welcome to Astro.">
+    <Header />
+    <main>
+        <div id="animationWindow"></div>
+    </main>
+</Layout>
+
+<style>
+    body {
+        height: 3000px;
+    }
+    #animationWindow {
+        margin-top: 600px;
+        width: 800px;
+        height: 800px;
+    }
+</style>
+
+<script>
+    import gsap from "gsap";
+    import lottie from "lottie-web";
+    import ScrollTrigger from "gsap/ScrollTrigger"; // プラグインを正しく読み込んでいるか確認
+    gsap.registerPlugin(ScrollTrigger);
+
+    LottieScrollTrigger({
+        target: "#animationWindow",
+        // path: "./lottie/search-anim.json",
+        path: "./lottie/sample_01.json",
+        speed: "medium",
+        scrub: 2,
+    });
+
+    function LottieScrollTrigger(vars) {
+        let playhead = { frame: 0 },
+            target = gsap.utils.toArray(vars.target)[0],
+            speeds = { slow: "+=2000", medium: "+=1000", fast: "+=500" },
+            st = {
+                trigger: target,
+                pin: true,
+                start: "top top",
+                end: speeds[vars.speed] || "+=1000",
+                scrub: 1,
+                markers: true,
+            },
+            ctx = gsap.context && gsap.context(),
+            animation = lottie.loadAnimation({
+                container: target,
+                renderer: vars.renderer || "svg",
+                loop: false,
+                autoplay: false,
+                path: vars.path,
+                rendererSettings: vars.rendererSettings || {
+                    preserveAspectRatio: "xMidYMid slice",
+                },
+            }),
+            frameAnimation;
+        for (let p in vars) {
+            // let users override the ScrollTrigger defaults
+            st[p] = vars[p];
+        }
+        frameAnimation = vars.timeline || gsap.timeline({ scrollTrigger: st });
+        if (vars.timeline && !vars.timeline.vars.scrollTrigger) {
+            // if the user passed in a timeline that didn't have a ScrollTrigger attached, create one.
+            st.animation = frameAnimation;
+            ScrollTrigger.create(st);
+        }
+        animation.addEventListener("DOMLoaded", function () {
+            let createTween = function () {
+                frameAnimation.to(
+                    playhead,
+                    {
+                        frame: animation.totalFrames - 1,
+                        ease: "none",
+                        duration: frameAnimation.duration() || 1,
+                        onUpdate: () =>
+                            animation.goToAndStop(playhead.frame, true),
+                    },
+                    0,
+                );
+                return () => animation.destroy && animation.destroy();
+            };
+            ctx && ctx.add ? ctx.add(createTween) : createTween();
+            // in case there are any other ScrollTriggers on the page and the loading of this Lottie asset caused layout changes
+            ScrollTrigger.sort();
+            ScrollTrigger.refresh();
+        });
+        animation.frameAnimation = frameAnimation;
+        return animation;
+    }
+</script>
