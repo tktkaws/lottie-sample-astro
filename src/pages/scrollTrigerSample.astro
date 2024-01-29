@@ -1,0 +1,93 @@
+---
+import Layout from "../layouts/Layout.astro";
+import Header from "../components/Header.astro";
+---
+
+<Layout title="scrollTriggerSample">
+    <Header />
+    <main>
+        <h1>scrollTriggerSample</h1>
+        <a href="#">
+            <div id="animationWindow"></div>
+        </a>
+    </main>
+</Layout>
+
+<style>
+    body {
+        height: 3000px;
+    }
+
+    #animationWindow {
+        /* margin-top: 600px; */
+        width: 800px;
+        height: 400px;
+        position: fixed;
+        bottom: 200px;
+        right: 100px;
+        border: solid 1px black;
+    }
+</style>
+
+<script>
+    import lottie from "lottie-web";
+    import gsap from "gsap";
+    import ScrollTrigger from "gsap/ScrollTrigger";
+    gsap.registerPlugin(ScrollTrigger);
+
+    //ScrollLottie (target: String, jsonPath: String, easeDuration: Number, speed: String "fast" | "medium" | "slow")
+
+    const ScrollLottie = (obj) => {
+        let anim = lottie.loadAnimation({
+            container: document.querySelector(obj.target),
+            renderer: "svg",
+            loop: false,
+            autoplay: false,
+            path: obj.path,
+        });
+
+        let timeObj = { currentFrame: 0 };
+        let endString =
+            obj.speed === "slow"
+                ? "+=2000"
+                : obj.speed === "medium"
+                  ? "+=1000"
+                  : obj.speed === undefined
+                    ? "+=1250"
+                    : "+=500";
+        ScrollTrigger.create({
+            trigger: obj.target,
+            scrub: true,
+            markers: true,
+            // pin: true,
+            start: "top top",
+            end: endString,
+            onUpdate: (self) => {
+                if (obj.duration) {
+                    gsap.to(timeObj, {
+                        duration: obj.duration,
+                        currentFrame: Math.floor(
+                            self.progress * (anim.totalFrames - 1),
+                        ),
+                        onUpdate: () => {
+                            anim.goToAndStop(timeObj.currentFrame, true);
+                        },
+                        ease: "expo",
+                    });
+                } else {
+                    anim.goToAndStop(
+                        self.progress * (anim.totalFrames - 1),
+                        true,
+                    );
+                }
+            },
+        });
+    };
+
+    ScrollLottie({
+        target: "#animationWindow",
+        path: "./lottie/sample_02.json",
+        duration: 4,
+        speed: "slow",
+    });
+</script>
