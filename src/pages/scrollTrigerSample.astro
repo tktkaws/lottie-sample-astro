@@ -35,8 +35,6 @@ import Header from "../components/Header.astro";
     import ScrollTrigger from "gsap/ScrollTrigger";
     gsap.registerPlugin(ScrollTrigger);
 
-    //ScrollLottie (target: String, jsonPath: String, easeDuration: Number, speed: String "fast" | "medium" | "slow")
-
     const ScrollLottie = (obj) => {
         let anim = lottie.loadAnimation({
             container: document.querySelector(obj.target),
@@ -86,8 +84,8 @@ import Header from "../components/Header.astro";
 
     ScrollLottie({
         target: "#animationWindow",
-        path: "./lottie/sample_02.json",
-        duration: 4,
+        path: "./lottie/sample_01.json",
+        duration: 1,
         speed: "slow",
     });
 </script>
